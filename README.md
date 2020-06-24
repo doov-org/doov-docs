@@ -1,8 +1,8 @@
 # dOOv (Domain Object Oriented Validation) documentation
 
-[dOOv](https://github.com/doov-io/doov) website and conference presentations.
+[dOOv](https://github.com/doov-io/doov) Code source.
 
-![dOOv logo](conference/img/doov_io_logo_dark_small.png)
+![dOOv logo](conference/img/doov/doov_logo_2020_blue.svg)
 
 ## Links
 
@@ -14,7 +14,13 @@
 ## Conferences
 
 ### How to Share Business Logic in a Polyglot App Mixing Java and TypeScript 
-- [How to Share Business Logic in a Polyglot App Mixing Java and TypeScript](https://doov.io/conference/how_to_share_business_logic_polyglot_java_ts_ocode19.html)
+- [How to Share Business Logic in a Polyglot App Mixing Java and TypeScript - CodeOne 19](https://doov.io/conference/how_to_share_business_logic_polyglot_java_ts_ocode19.html)
+
+### How to create DSL with lambda builders
+- [How to create DSL with lambda builders](https://doov.io/conference/how_to_create_dsl_with_lambda_builders.html)
+- [How to create DSL with lambda builders - Nantes JUG](https://doov.io/conference/how_to_create_dsl_with_lambda_builders_nantes_jug.html)
+- [How to create DSL with lambda builders - INSTA](https://doov.io/conference/how_to_create_dsl_with_lambda_builders_insta.html)
+- [How to create DSL with lambda builders - Oracle Code Roma](https://doov.io/conference/how_to_create_dsl_with_lambda_builders_roma.html)
 
 ### DSL.using(java).toGoBeyond(BeanValidation)
 
@@ -43,6 +49,10 @@
 
 - [Bigdata at lesfurets com](https://doov.io/conference/bigdata_at_lesfurets_com.html)
 - [Bigdata at lesfurets com theodo](https://doov.io/conference/bigdata_at_lesfurets_com_theodo.html)
-- [goto cassandra in 40 minutes](https://doov.io/conference/goto_cassandra_in_40_minutes.html)
-- [lambda architecture at lesfurets meta conf](https://doov.io/conference/lambda_architecture_at_lesfurets_meta_conf.html)
+- [Goto cassandra in 40 minutes](https://doov.io/conference/goto_cassandra_in_40_minutes.html)
+- [Goto cassandra in 60 minutes](https://doov.io/conference/goto_cassandra_in_60_minutes.html)
+- [Goto cassandra in 60 minutes - INSTA](https://doov.io/conference/goto_cassandra_in_60_minutes_insta.html)
+- [Lambda architecture at lesfurets meta conf](https://doov.io/conference/lambda_architecture_at_lesfurets_meta_conf.html)
+- [Becoming cloud native](https://doov.io/conference/becoming_cloud_native.html)
+- [Becoming cloud native - INSTA](https://doov.io/conference/becoming_cloud_native_insta.html)
 

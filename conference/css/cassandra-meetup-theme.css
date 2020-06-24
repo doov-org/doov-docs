@@ -375,6 +375,12 @@ body {
   padding: 10px;
 }
 
+.footer .logo-doov {
+  height: 20px;
+  margin-bottom: 20px;
+  margin-left: 20px;
+}
+
 .footer .logo-conference {
   height: 40px;
   margin: 10px;

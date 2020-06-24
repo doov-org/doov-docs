@@ -3,14 +3,25 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Goto Cassandra in 40 minutes [at] LesFurets.com</title>
+  <title>Goto Cassandra in 60 minutes [at] LesFurets</title>
   <meta name="description" content="LesFurets has move his data pipeline to ensure the business grow, discover during the presentation how they relie on Cassandra in a live code session">
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link rel="stylesheet" href="bower_components/reveal.js/css/reveal.css">
   <link rel="stylesheet" href="bower_components/reveal.js/lib/css/zenburn.css">
-  <link rel="stylesheet" href="css/cassandra-meetup-theme.css" id="theme">
+  <link rel="stylesheet" href="css/ocode-theme.css" id="theme">
+  <style>
+    body {
+      background-color: #034a5e;
+      background-image: linear-gradient(to bottom right,#0d718d, #515d7f, #b23743, rgba(237, 31, 120, 0.58));
+      background-image: -webkit-linear-gradient(to bottom right,#0d718d, #515d7f, #b23743, rgba(237, 31, 120, 0.58));
+    }
+    .footer .logo-doov {
+        height: 30px;
+        margin-top: 20px;
+    }
+  </style>
   <script>
     if (window.location.search.match(/print-pdf/gi)) {
       var link = document.createElement('link');
@@ -24,73 +35,16 @@
 
 <body>
   <div class="footer">
-    <img class="logo-lesfurets" src="img/third-party/Les Furets_Logo_Darkbackgound_RGB.svg">
     <img class="logo-doov" src="img/doov/doov_logo_2020_white.svg">
-    <img class="logo-conference" src="img/third-party/logo_paris_cassandra_user_group.png">
+    <img class="logo-conference" src="img/third-party/cfa_insta.jpg">
   </div>
   <div class="reveal">
     <div class="slides">
 
       <section>
         <img class="logo herve-francois" width="45%" src="img/third-party/lf_com_herve_francois.png">
-        <h1 class="code">Goto Cassandra in 40 minutes
-          <br> &nbsp;&nbsp;&nbsp;[at] LesFurets.com</h1>
-      </section>
-
-      <section>
-        <section>
-          <h2>Welcome to the Furets!</h2>
-        </section>
-        <section>
-          <div class="fragment">
-            <h2>@troisdiz – Denis Rampnoux</h2>
-            <ul>
-              <li>In the software business since 2001</li>
-              <li>Team Data Techlead at LesFurets.com</li>
-            </ul>
-          </div>
-          <br/>
-          <br/>
-          <div class="fragment">
-            <h2>@gdigugli – Gilles Di Guglielmo</h2>
-            <ul>
-              <li>Designer of sweet cooked software since 1999</li>
-              <li>Software Architect at LesFurets.com</li>
-            </ul>
-          </div>
-        </section>
-        <section>
-          <h2>Insurance comparison (and more !)</h2>
-          <img width="70%" src="img/lf_com_home.png">
-        </section>
-        <section>
-          <img width="70%" src="img/lf_com_mrh_journey.png">
-        </section>
-        <section>
-          <img width="70%" src="img/lf_com_car_price_sheet.png">
-        </section>
-        <section>
-          <img width="50%" src="img/third-party/logo_lesfurets_new.png">
-          <p></p>
-          <ul class="fragment">
-            <li>1 website :
-              <li>5 Insurance Products : Car, Health, Home, Bike, Loan</li>
-              <li>Banks, energy, loans</li>
-              <li class="emptyline">1 codebase, 450k lines of code, 60k unit tests, 150 selenium tests</li>
-
-              <li>22 Developers, 2 DevOps, 4 Architects</li>
-              <li class="emptyline">19 production servers including Load balancers, Frontend, Backend, Databases, BI
-                <br/>
-              </li>
-
-              <li>1 release per day</li>
-              <li class="emptyline">8 years of code history
-                <br/>
-              </li>
-
-              <li>3M quotes/year, 40% of market share, 4M of customers</li>
-          </ul>
-        </section>
+        <h1 class="code">Goto Cassandra in 60 minutes
+          <br> &nbsp;&nbsp;&nbsp;[at] LesFurets</h1>
       </section>
 
       <section>
@@ -142,6 +96,50 @@
       </section>
 
       <section>
+          <section>
+              <h1>Cassandra in a Nutshell</h1>
+              <ul>
+                <li>Created at Facebook ...</li>
+                <li>... and now used at Netflix, Apple and Instagram !</li>
+                <li>A mix of the data model of Google BigTable</li>
+                <li>... and the distributing model of Amazon Dynamo DB</li>
+                <li>hard schema constraints...</li>
+                <li>... and tunable consistency</li>
+              </ul>
+          </section>
+          <section>
+              <h1>Cassandra distribution</h1>
+              <h2>Line Structure</h2>
+              <img class="cassandra-keys" width="90%" src="img/cassandra-keys.svg">
+          </section>
+          <section>
+              <h1>Cassandra distribution</h1>
+              <h2>Consistent Hashing of the Partition Key<h2>
+              <img class="cassandra-consistent-hashing" src="img/cassandra-consistent-hashing.svg">
+          </section>
+          <section>
+              <h1>Cassandra distribution<h1>
+              <h2>Query Path</h2>
+              <img class="cassandra-query-path" src="img/cassandra-query-path.svg">
+          </section>
+          <section>
+              <h1>Cassandra distribution</h1>
+              <h2>Tunable consistency (1/2)</h2>
+              <img class="cassandra-consistency-illustrated" width="90%" src="img/cassandra-consistency-illustrated.svg">
+          </section>
+          <section>
+              <h1>Cassandra distribution</h1>
+              <h2>Tunable consistency (2/2)</h2>
+              <ul>
+                  <li><strong>RF &lt; W + R</strong></li>
+                  <li><a href="https://en.wikipedia.org/wiki/CAP_theorem">https://en.wikipedia.org/wiki/CAP_theorem</a></li>
+              </ul>
+          </section>
+      </section>
+      
+
+
+      <section>
         <section>
           <h1>Moving the architecture</h1>
         </section>
@@ -157,24 +155,11 @@
 
       <section>
         <section>
-          <h1>Moving the infrastrucure</h1>
-        </section>
-        <section>
-          <h2>Hosting at OVH</h2>
-          <img class="fragment" width="90%" src="img/lf_com_data_ovh.png">
+          <h1>Moving the infrastructure</h1>
         </section>
         <section>
           <h2>Cassandra cluster current setup</h2>
           <img class="fragment" width="100%" src="img/infra_cassandra.png">
-        </section>
-        <section>
-          <h2>Note on Cassandra availability ...</h2>
-          <ul class="fragment">
-              <li>Only RF=2 and read/write in ONE but ...</li>
-              <li>We have already lost a machine...</li>
-              <li>We have already lost a datacenter...</li>
-              <li>We never lost data</li>
-          </ul>
         </section>
         <section>
           <h2>Cassandra cluster next setup</h2>
@@ -411,7 +396,7 @@ model.getFieldInfos().stream().filter(f -> {
           </p>
           <ul>
             <li><a href="http://github.com/doov-io/doov">http://github.com/doov-io/doov</a> (framework and examples)</li>
-            <li><a href="https://repo1.maven.org/maven2/io/doov">https://repo1.maven.org/maven2/io/doov</a> (maven central: <strong>2.0.0</strong>)</li>
+            <li><a href="https://repo1.maven.org/maven2/io/doov">https://repo1.maven.org/maven2/io/doov</a> (maven central: <strong>2.7.8</strong>)</li>
             <li><a href="http://github.com/doov-io/doov-docs">http://github.com/doov-io/doov-docs</a> (slides)</li>
             <li>Apache Licence</li>
             <li>Try and contribute!</li>
@@ -420,7 +405,6 @@ model.getFieldInfos().stream().filter(f -> {
 
         <section>
           <h2>Thank You!</h2>
-          <img class="logo herve-francois" width="50%" src="img/third-party/logo_paris_cassandra_user_group.png">
         </section>
       </section>
 
