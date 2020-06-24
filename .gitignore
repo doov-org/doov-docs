@@ -1,3 +1,6 @@
 /conference/.DS_Store
 /.DS_Store
 .idea
+
+/conference/cdr/Backup_*.cdr
+.DS_Store

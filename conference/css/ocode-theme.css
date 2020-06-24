@@ -357,7 +357,6 @@ body {
  *********************************************/
 .footer {
   background-color: #002837;
-  background-image: url("../png/ocode-bg.png");
   bottom: 0;
   left: 0;
   position: absolute;
@@ -369,10 +368,16 @@ body {
 }
 
 .footer .logo-lesfurets {
-  height: 60px;
-  margin-top: 5px;
+  height: 40px;
+  margin-top: 10px;
   margin-left: 5px;
   padding: 10px;
+}
+
+.footer .logo-doov {
+  height: 20px;
+  margin-bottom: 20px;
+  margin-left: 20px;
 }
 
 .footer .logo-conference {

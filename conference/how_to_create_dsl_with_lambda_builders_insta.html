@@ -1,0 +1,920 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>How to Create a Fluent API DSL with Lambda Builders - Code One 2018 - BOF 5129</title>
+  <meta name="description" content="dOOv is fluent, stream-like API, great for writing type checked code, taking advantage of Java 8 functions and lambdas. In this presentation we will explore the issues of the predicate reduction features of dOOv.">
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="bower_components/reveal.js/css/reveal.css">
+  <link rel="stylesheet" href="bower_components/reveal.js/lib/css/zenburn.css">
+  <link rel="stylesheet" href="css/ocode-theme.css" id="theme">
+  <style>
+      body {
+        background-color: #034a5e;
+        background-image: linear-gradient(to bottom right,#004153,#0d718d, #515d7f, #b23743, #f05829);
+        background-image: -webkit-linear-gradient(to bottom right,#004153,#0d718d, #515d7f, #b23743, #f05829);
+      }
+      .footer .logo-doov {
+        height: 30px;
+        margin-top: 20px;
+      }
+  </style>
+  <script>
+    if (window.location.search.match(/print-pdf/gi)) {
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = 'css/print/pdf.css';
+      document.getElementsByTagName('head')[0].appendChild(link);
+    }
+  </script>
+</head>
+
+<body>
+  <div class="footer">
+    <img class="logo-doov" src="img/doov/doov_logo_2020_white.svg">
+    <img class="logo-conference" src="img/third-party/cfa_insta.jpg">
+  </div>
+  <div class="reveal">
+    <div class="slides">
+
+      <section>
+        <img class="logo herve-francois" width="45%" src="img/third-party/lf_com_herve_francois.png">
+        <div class="container-grid-2">
+          <h1 class="code">How to Create
+            <br>a Fluent API DSL
+            <br>with Lambda Builders ?
+          </h1>
+        </div>
+      </section>
+
+      <section>
+        <section>
+          <h2>Introduction</h2>
+        </section>
+
+        <section data-transition="slide-in fade-out">
+          <img width="66%" src="img/lf_car_journey.png">
+        </section>
+
+        <section data-transition="fade">
+          <img width="66%" src="img/lf_com_car_price_sheet.png">
+        </section>
+
+        <section data-transition="fade">
+          <h2>LesFurets service orchestration</h2>
+          <img width="80%" src="img/lf_scatter_gather.png">
+        </section>
+
+        <section data-transition="fade-in slide-out">
+          <h2>LesFurets service orchestration</h2>
+          <img width="80%" src="img/lf_scatter_gather_business_rules.png">
+        </section>
+
+        <section>
+          <h2>Insurers partners</h2>
+          <p>We have 100 live insurers, on 5 products, each with
+            <strong>business validation rules</strong>, that filter prospects based on their profile</p>
+        </section>
+
+        <section>
+          <h2>Insurer exclusions</h2>
+          <p>Hierarchy of 492 legacy classes, no governance or auditability</p>
+          <img width="40%" src="img/exclusion-list.png">
+        </section>
+
+        <section>
+          <h2>Use case: insurer exclusions</h2>
+          <p>Insurer exclusions based on object model (legacy code)</p>
+          <div class="code-wrapper small">
+            <pre class="prettyprint">
+                <code class="code lang-java">
+public void check(FieldContext context, FormuleMoto formule, Conducteur conducteur,
+                  Vehicule vehicule, Void unused, Besoins besoins,
+                  Set&lt;EAbTestingScenario&gt; scenarios)
+                  throws ExclusionException {
+    if (besoins == null) {
+        return;
+    }
+    if (besoins.getDateDebutContrat() == null) {
+        return;
+    }
+    if (!DateHelper.isAfter(besoins.getDateDebutContrat(),
+                    DateHelper.ajouteJoursADate(DateHelper.getToday(), NBR_JOURS),
+                    DateHelper.EPrecision.jour)) {
+        throw new ExclusionException(DATE_EFFET_PLUS_60_JOURS);
+    }
+}
+                </code>
+              </pre>
+          </div>
+        </section>
+
+        <section>
+          <h2>Use case: goal</h2>
+          <ul>
+            <li>
+              <strong>compliance</strong>: the rules correspond to the specification documents</li>
+            <li>
+              <strong>auditability</strong>: understand a rule without looking at the code</li>
+            <li>
+              <strong>governance</strong>: maintenance of the rules catalogue</li>
+            <li>
+              <strong>clarity</strong>: productivity for developers</li>
+          </ul>
+          <p>Same rule, more
+            <strong>fluent</strong>:</p>
+          <div class="code-wrapper">
+            <pre class="prettyprint">
+                <code class="code lang-java">
+public ExclusionRule exclusionRule() {
+    return DOOV.when(dateContrat().after(todayPlusDays(60)))
+               .exclusionRule();
+}
+                </code>
+              </pre>
+          </div>
+        </section>
+
+        <section>
+          <h2>Why a fluent API?</h2>
+          <p>Java is verbose, but you can reduce the noise and write code like natural language with a fluent API</p>
+          <div class="code-wrapper">
+            <pre class="prettyprint">
+                <code class="code lang-java">
+// SQL query with jOOQ
+DSL.using(conn)
+        .selectFrom(SALES)
+        .where(MODULE.equal(module.getIntValue()))
+        .and(NOTIF_DATETIME.greaterOrEqual(from))
+        .and(DELETED.equal(SaleState.NO.getIntValue()))
+        .stream()
+        .map(SalesDAO::toSale)
+        .collect(toList());
+                </code>
+              </pre>
+          </div>
+        </section>
+
+        <section>
+          <h2>Meet dOOv!</h2>
+          <p>
+            <strong>D</strong>omain
+            <strong>O</strong>bject
+            <strong>O</strong>riented
+            <strong>V</strong>alidation</p>
+          <img class="logo herve-francois" src="img/doov/doov_logo_2020_white.svg" width="40%">
+          <p>dOOv is a fluent API for typesafe domain model validation</p>
+        </section>
+
+        <section>
+          <p>
+            <strong>dOOv</strong> : Under the hood</p>
+          <div class="code-wrapper">
+            <pre class="prettyprint">
+                <code class="code lang-java">
+DOOV.when(accountCompany.eq(Company.LES_FURETS)
+            .and(accountPhoneNumber.startsWith("+33"))).validate();
+                </code>
+              </pre>
+          </div>
+          <br/>
+          <img src="img/metadata_lambda_tree.svg" width="90%">
+        </section>
+      </section>
+
+      <section>
+        <section>
+          <h2>Live code</h2>
+        </section>
+        <section>
+          <div class="code-wrapper">
+            <pre class="prettyprint">
+                <code class="code lang-java">
+public static boolean validateAccount(User user,
+                Account account, Configuration config) {
+  if (config == null) {
+      return false;
+  }
+  if (user == null || user.getBirthDate() == null) {
+      return false;
+  }
+  if (account == null || account.getCountry() == null ||
+      account.getPhoneNumber() == null) {
+      return false;
+  }
+  if (YEARS.between(user.getBirthDate(), LocalDate.now()) >= 18
+          && account.getEmail().length() <= config.getMaxEmailSize()
+          && account.getCompany() == Company.LES_FURETS
+          && account.getPhoneNumber().startsWith("+33")) {
+      return true;
+  }
+  return false;
+}
+                </code>
+              </pre>
+          </div>
+        </section>
+
+        <section>
+          <div class="code-wrapper">
+            <pre class="prettyprint">
+                <code class="code lang-java">
+public static SampleModel sample() {
+  User user = new User();
+  user.setId(1);
+  user.setFirstName("Foo");
+  user.setLastName("BAR");
+  // ...
+            
+  Account account = new Account();
+  account.setCompany(Company.LES_FURETS);
+  account.setId(9);
+  // ...
+                </code>
+              </pre>
+          </div>
+        </section>
+        <section>
+          <div class="code-wrapper">
+            <pre class="prettyprint">
+                <code class="code lang-java">
+public class Account extends Identity {
+
+  @SamplePath(field = SampleFieldId.LOGIN, readable = "account.login")
+  private String login;     
+  // ...
+
+  <mark>@SamplePath(field = SampleFieldId.COMPANY, readable = "account.company")</mark>
+  private Company company;
+  // ...
+                </code>
+              </pre>
+          </div>
+        </section>
+        <section>
+          <div class="code-wrapper">
+            <pre class="prettyprint">
+                <code class="code lang-xml output">
+SampleModelResourceBundle_en_US.properties
+
+account.login = account login
+account.password = account password
+account.country = account country
+<mark>account.company = account company</mark>
+...
+
+SampleModelResourceBundle_fr_FR.properties
+
+account.login = l'identifiant de connection
+account.country = le pays
+<mark>account.company = la soci\u00e9t\u00e9</mark>
+...
+
+                </code>
+              </pre>
+          </div>
+        </section>
+        <section>
+          <div class="code-wrapper">
+            <pre class="prettyprint">
+                <code class="code lang-xml output">
+> ./gradlew -p sample build
+
+BUILD SUCCESSFUL in 23s
+10 actionable tasks: 3 executed, 7 up-to-date
+                </code>
+              </pre>
+          </div>
+        </section>
+
+        <section>
+          <div class="code-wrapper">
+            <pre class="prettyprint">
+                <code class="code lang-java">
+public class RulesCodeOneTest {
+  SampleModelRule demoRule = DslSampleModel
+          .when(DOOV.matchAll(
+                  userBirthdate.ageAt(today()).greaterOrEquals(18),
+                  accountEmail.length().lesserOrEquals(configurationMaxEmailSize),
+                  accountCompany.eq(Company.LES_FURETS),
+                  accountPhoneNumber.startsWith("+33")))
+          .validate();
+}
+                </code>
+              </pre>
+          </div>
+        </section>
+        <section>
+          <div class="code-wrapper">
+            <pre class="prettyprint">
+                <code class="code lang-java">
+@Test
+public void test_account() {
+    SampleModel sample = SampleModels.sample();
+              
+    Result result = demoRule.executeOn(sample);
+              
+    Assertions.assertThat(result).isTrue();
+    System.out.println(demoRule.readable());
+    System.out.println(demoRule.markdown(Locale.FRANCE));
+}
+                </code>
+              </pre>
+          </div>
+        </section>
+
+        <section>
+          <div class="code-wrapper">
+            <pre class="prettyprint">
+                <code class="code lang-xml output">
+rule when match all [user birthdate age at today >= 18, //
+  account email length is <= configuration max email size, //
+  account company = LES_FURETS, account phone number starts with '+33'] validate
+* règle
+  * lorsque
+    * correspond à tous
+      * la date de naissance âge à la date du jour >= 18
+      * l'émail a une longueur <= la taille maximum de l'émail
+      * la société = LES_FURETS
+      * le numéro de téléphone commence par '+33'
+  * valider
+                </code>
+              </pre>
+          </div>
+        </section>
+
+        <section>
+          <div class="code-wrapper">
+            <pre class="prettyprint">
+                <code class="code lang-java">
+@Test
+public void test_account_failure_cause() {
+    SampleModel sample = SampleModels.sample();
+    <mark>sample.getAccount().setPhoneNumber("+1 12 34 56 78");</mark>
+              
+    Result result = demoRule.executeOn(sample);
+              
+    Assertions.assertThat(result).isTrue();
+}
+                </code>
+              </pre>
+          </div>
+        </section>
+
+
+        <section>
+          <div class="code-wrapper">
+            <pre class="prettyprint">
+                <code class="code lang-xml output">
+java.lang.AssertionError: Expected result to be true 
+  (invalidated nodes: [account phone number starts with '+33'])
+                </code>
+              </pre>
+          </div>
+        </section>
+
+        <section>
+          <div class="code-wrapper">
+            <pre class="prettyprint">
+                <code class="code lang-java">
+@Test
+public void test_account_failure_cause() {
+    SampleModel sample = SampleModels.sample();
+    sample.getAccount().setPhoneNumber("+1 12 34 56 78");
+              
+    Result result = demoRule.executeOn(sample);
+              
+    Assertions.assertThat(result)
+            <mark>.isFalse()</mark>
+            <mark>.hasFailureCause("account phone number starts with '+33'");</mark>
+}
+                </code>
+              </pre>
+          </div>
+        </section>
+
+        <section>
+          <div class="code-wrapper">
+            <pre class="prettyprint">
+                <code class="code lang-java">
+@Test
+public void test_account_failure_cause_2() {
+    SampleModel sample = SampleModels.sample();
+    sample.getAccount().setPhoneNumber("+1 12 34 56 78");
+    sample.getAccount().setCompany(Company.BLABLACAR);
+              
+    <mark>Result result = demoRule.withShortCircuit(false).executeOn(sample);</mark>
+              
+    Assertions.assertThat(result)
+            .isFalse()
+            .hasFailureCause("match all [account company = LES_FURETS, " +
+                    "account phone number starts with '+33']");
+}
+                </code>
+              </pre>
+          </div>
+        </section>
+
+      </section>
+
+      <section>
+        <section>
+          <h2>A few predicate reductions examples</h2>
+        </section>
+        <section>
+          <h2>Multiple 'and' operator</h2>
+          <p>
+            <em>Validate that a profile
+              <br> has an email with less than 20 characters
+              <br> has at least 18 years when their country is France
+              <br> their country is France when their phone number starts with '+33'</em>
+          </p>
+          <p/>
+          <div class="code-wrapper small">
+            <pre class="prettyprint">
+                  <code class="code lang-java">
+  DOOV.when(accountEmail.length().lesserThan(20)
+        .and(userBirthdate.ageAt(today()).greaterThan(18)
+          .and(accountCountry.eq(Country.FR)))
+        .and(accountCountry.eq(Country.FR)
+          .and(accountPhoneNumber.startsWith("+33"))))
+      .validate();
+                  </code>
+                </pre>
+          </div>
+        </section>
+
+        <section>
+          <h2>Multiple 'and' operators</h2>
+          <div class="code-wrapper small">
+            <pre class="prettyprint">
+                  <code class="code lang-java">
+  model.getAccount().setEmail("test@test.org");
+  model.getAccount().setCountry(Country.FR);
+  model.getUser().setBirthDate(LocalDate.now().minusYears(19));
+  
+  ValidationRule rule = DOOV
+      .when(<mark class="true-predicate">accountEmail.length().lesserThan(20)</mark>  
+        .and(<mark class="true-predicate">userBirthdate.ageAt(today()).greaterThan(18)</mark>
+            .and(<mark class="true-predicate">accountCountry.eq(Country.FR)</mark>))
+        .and(<mark class="true-predicate">accountCountry.eq(Country.FR)</mark>
+            .and(<mark class="false-predicate">accountPhoneNumber.startsWith("+33")</mark>)))
+      .validate();
+  
+  Result result = rule.withShortCircuit(false).executeOn(wrapper);
+  System.out.println("&gt; " + result.getFailureCause());
+                  </code>
+                </pre>
+          </div>
+          <br>
+          <div class="code-wrapper small">
+            <pre class="prettyprint">
+                  <code class="code lang-xml output">
+  &gt; account phone number starts with '+33'
+                  </code>
+                </pre>
+          </div>
+        </section>
+
+        <section>
+          <h2>'count' operator for predicates</h2>
+          <p>
+            <em>Validate that a profile match at least two conditions :
+              <br>
+              <ul>
+                <li>profile has at least 18 years</li>
+                <li>country is France</li>
+                <li>phone number starts with '+33'</li>
+              </ul>
+            </em>
+          </p>
+          <p/>
+          <div class="code-wrapper small">
+            <pre class="prettyprint">
+                  <code class="code lang-java">
+  DOOV.when(count(
+        userBirthdate.ageAt(today()).greaterThan(18),
+        accountCountry.eq(Country.FR),
+        accountPhoneNumber.startsWith("+33")).greaterThan(1))
+      .validate();
+                  </code>
+                </pre>
+          </div>
+        </section>
+
+        <section>
+          <h2>'count' operator for predicates</h2>
+          <div class="code-wrapper small">
+            <pre class="prettyprint">
+                  <code class="code lang-java">
+  model.getUser().setBirthDate(LocalDate.now().minusYears(19));
+  model.getAccount().setCountry(Country.CAN);
+  model.getAccount().setPhoneNumber("1 23 45 67 89");
+  
+  ValidationRule rule = DOOV
+      .when(count(
+              <mark class="true-predicate">userBirthdate.ageAt(today()).greaterThan(18)</mark>,
+              <mark class="false-predicate">accountCountry.eq(Country.FR)</mark>,
+              <mark class="false-predicate">accountPhoneNumber.startsWith("+33")</mark>)
+          .greaterThan(1))
+      .validate();
+  
+  Result result = rule.withShortCircuit(false).executeOn(wrapper);
+  System.out.println("&gt; " + result.getFailureCause());
+                  </code>
+                </pre>
+          </div>
+          <br>
+          <div class="code-wrapper small">
+            <pre class="prettyprint">
+                  <code class="code lang-xml output">
+  &gt; account country = FR and account phone number starts with '+33'
+                  </code>
+            </pre>
+          </div>
+        </section>
+
+      </section>
+
+      <section>
+        <section>
+          <h2>Beyond bean validation</h2>
+          <p>Annotation based APIs for validating POJOs</p>
+          <p>Bean Validation 2.0 : <strong>JSR 380</strong><br>
+            Reference implementation : <strong>Hibernate Validator</strong></p>
+        </section>
+
+        <section>
+          <h2>Beyond Bean Validation: types</h2>
+          <p>Bean Validation rules are not strongly typed since it's annotation based. This code will fail at compile time,
+            but your IDE won't be able to tell you why.</p>
+          <div class="code-wrapper">
+            <pre class="prettyprint">
+                <code class="code lang-java">
+public class Account {
+
+    @NotNull @Email
+    private Email email;
+
+}
+                </code>
+              </pre>
+          </div>
+        </section>
+
+        <section>
+          <h2>Beyond Bean Validation: complex validation</h2>
+          <p>Because Bean Validation constraints are based on field annotation, cross validation between fields are only available
+            through the extension mechanism.</p>
+          <div class="code-wrapper">
+            <pre class="prettyprint">
+                <code class="code lang-java">
+public class Account {
+
+    @Pattern(regexp = "(FR)|(UK)")
+    private String country;
+
+    @Pattern(regexp = "???")
+    private String phoneNumber;
+
+}
+                </code>
+              </pre>
+          </div>
+        </section>
+
+        <section>
+          <h2>Beyond Bean Validation: natural language</h2>
+          <p>Bean Validation rules are not written with a natural language syntax and does not provide a syntax tree</p>
+          <div class="code-wrapper">
+            <pre class="prettyprint">
+                <code class="code lang-java">
+@Size(min = 10, max = 200,
+      message = "About Me must be between 10 and 200 characters")
+private String aboutMe;
+                </code>
+              </pre>
+          </div>
+          <p></p>
+          <h2>DSL</h2>
+          <div class="code-wrapper">
+            <pre class="prettyprint">
+                <code class="code lang-java">
+userAboutMe().length().between(10, 200).validate().readable()
+&gt; When user about me length is between 10 and 200, validate
+                </code>
+              </pre>
+          </div>
+        </section>
+
+        <section>
+          <img src="img/exclusions_maintenance_page.png" width="100%">
+        </section>
+
+        <section>
+          <img src="img/doov_bench_ui.png" width="90%">
+        </section>
+
+        <section>
+          <h2>Beyond Bean Validation: syntax versus consistency</h2>
+          <p>&nbsp;</p>
+          <div class="horizontal">
+            <div class="column column-2">
+              <div>
+                <strong style="color:#59B2AC">Bean Validation</strong> allows syntax validation</br>&nbsp;</br>&nbsp;
+              </div>
+              <div>
+                <strong style="color:#59B2AC">Bean Validation</strong> rules are written on the model</br>&nbsp;</br>&nbsp;
+              </div>
+              <div>
+                <strong style="color:#59B2AC">Bean Validation</strong> uses reflection
+              </div>
+            </div>
+            <div class="column column-2">
+              <div>
+                <strong style="color:#ec7f00">dOOv</strong> allows consistency checks</br>&nbsp;</br>&nbsp;
+              </div>
+              <div>
+                <strong style="color:#ec7f00">dOOv</strong> rules are writtent outside of the model, allowing complex checks</br>&nbsp;</br>&nbsp;
+              </div>
+              <div>
+                <strong style="color:#ec7f00">dOOv</strong> uses code generation
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section>
+        <section>
+          <h2>Going further</h2>
+        </section>
+
+          <section data-transition="fade-in slide-out">
+              <h2>LesFurets service Mapping</h2>
+              <img width="80%" src="img/lf_scatter_gather_mapping_rules.png">
+          </section>
+
+          <section>
+              <h2>Domain Object Oriented Mapping</h2>
+              <p>Next step is extending the DSL to create a<br>
+                  <strong>bean mapping framework</strong>
+                  <p>It features the same AST to text and statistics functionalities.</p>
+          </section>
+
+          <section>
+              <h2>Use Case : Object-to-Object Mapping</h2>
+              <div class="horizontal">
+                  <div class="column">
+                      <p>
+                          <strong style="color:orange">source model</strong>
+                      </p>
+                      <div class="code-wrapper small">
+                <pre class="prettyprint">
+                    <code class="code lang-java">
+class Model {
+  User user;
+  Account account;
+}
+
+class User {
+  String firstName;
+  String lastName;
+  LocalDate birthdate;
+}
+
+class Account {
+  String email;
+  boolean acceptEmail;
+  Country country;
+}
+                    </code>
+                  </pre>
+                      </div>
+                  </div>
+                  <div class="column fragment">
+                      <p>→</p>
+                  </div>
+                  <div class="column fragment">
+                      <p class="in-model">
+                          <strong style="color:#59B2AC">target model</strong>
+                      </p>
+                      <div class="code-wrapper small">
+                <pre class="prettyprint">
+                    <code class="code lang-java">
+class Employee {
+  String fullName;
+  String email;
+  int age;
+  String country;
+  String company;
+}
+                    </code>
+                  </pre>
+                      </div>
+                  </div>
+              </div>
+          </section>
+
+
+          <section>
+              <h2>Use Case : Object-to-Object Mapping</h2>
+              <div class="code-wrapper">
+                  <pre class="prettyprint">
+                      <code class="code lang-java">Model model = ...;
+Employee employee = new Employee();
+<span class="fragment">// declarative mapping rule
+MappingRule rules = mappings(
+  <span class="fragment">when(<mark class="in-model">accountAcceptEmail</mark>.isTrue())
+      .then(map(<mark class="in-model">accountEmail</mark>).to(<mark class="out-model">employeeEmail</mark>)),</span>
+
+  <span class="fragment">map(<mark class="in-model">userFirstName</mark>, <mark class="in-model">userLastName</mark>)
+      .using(biConverter((f, l) -> f + " " + l, "", "combine names"))
+      .to(<mark class="out-model">employeeFullname</mark>),</span>
+
+  <span class="fragment">map(<mark class="in-model">userBirthdate</mark>.ageAt(today())).to(<mark class="out-model">employeeAge</mark>),</span>
+
+  <span class="fragment">map(<mark class="in-model">accountCountry</mark>)
+      .using(converter(c -> c.name(), "country name"))
+      .to(<mark class="out-model">employeeCountry</mark>)</span>
+);</span>
+<span class="fragment">// then execute the mapping
+rules.executeOn(model, employee)</span>
+                    </code>
+                </pre>
+              </div>
+          </section>
+          <section>
+              <h2>Use Case : Object-to-Object Mapping</h2>
+              <div class="horizontal">
+                  <div class="column column-2">
+              <div class="code-wrapper smaller">
+                  <pre class="prettyprint">
+                      <code class="code lang-java">Model model = ...;
+Employee employee = new Employee();
+// declarative mapping rule
+MappingRule rules = mappings(
+  when(<mark class="in-model">accountAcceptEmail</mark>.isTrue())
+      .then(map(<mark class="in-model">accountEmail</mark>).to(<mark class="out-model">employeeEmail</mark>)),
+
+  map(<mark class="in-model">userFirstName</mark>, <mark class="in-model">userLastName</mark>)
+      .using(biConverter(
+            (f, l) -> f + " " + l, "", "combine names"))
+      .to(<mark class="out-model">employeeFullname</mark>),
+
+  map(<mark class="in-model">userBirthdate</mark>.ageAt(today())).to(<mark class="out-model">employeeAge</mark>),
+
+  map(<mark class="in-model">accountCountry</mark>)
+      .using(converter(c -> c.name(), "country name"))
+      .to(<mark class="out-model">employeeCountry</mark>)
+);
+// then execute the mapping
+rules.executeOn(model, employee)</code>
+                </pre>
+              </div>
+                  </div>
+                  <div class="column column-2" style="width: 800px; height: auto;" >
+                      <img width="80%" src="img/mapping_html_en.png">
+                  </div>
+              </div>
+          </section>
+          <section>
+              <h2>Use Case : Object-to-Object Mapping</h2>
+              <div class="horizontal">
+                  <div class="column column-2">
+              <div class="code-wrapper smaller">
+                  <pre class="prettyprint">
+                      <code class="code lang-java">Model model = ...;
+Employee employee = new Employee();
+// declarative mapping rule
+MappingRule rules = mappings(
+  when(<mark class="in-model">accountAcceptEmail</mark>.isTrue())
+      .then(map(<mark class="in-model">accountEmail</mark>).to(<mark class="out-model">employeeEmail</mark>)),
+
+  map(<mark class="in-model">userFirstName</mark>, <mark class="in-model">userLastName</mark>)
+      .using(biConverter(
+            (f, l) -> f + " " + l, "", "combine names"))
+      .to(<mark class="out-model">employeeFullname</mark>),
+
+  map(<mark class="in-model">userBirthdate</mark>.ageAt(today())).to(<mark class="out-model">employeeAge</mark>),
+
+  map(<mark class="in-model">accountCountry</mark>)
+      .using(converter(c -> c.name(), "country name"))
+      .to(<mark class="out-model">employeeCountry</mark>)
+);
+// then execute the mapping
+rules.executeOn(model, employee)</code>
+                </pre>
+              </div>
+                  </div>
+                  <div class="column column-2" style="width: 800px; height: auto;" >
+                      <img width="80%" src="img/mapping_html_it.png">
+                  </div>
+              </div>
+          </section>
+
+          <section>
+              <h2>Use Case : Object Manipulation</h2>
+              <div class="code-wrapper">
+            <pre class="prettyprint">
+                <code class="code lang-java">
+MappingRule rules = mappings(
+  when(<mark class="out-model">employeeAge</mark>.lesserThan(18))
+      .then(mapNull(<mark class="out-model">employeeFullname</mark>)),
+  map(<mark class="out-model">employeeEmail</mark>)
+      .using(converter(s -> sha256.hashString(s), "sha256 string"))
+      .to(<mark class="out-model">employeeEmail</mark>)
+)
+// then execute the mapping
+.executeOn(employee, employee)
+                </code>
+              </pre>
+              </div>
+          </section>
+
+      </section>
+      <section>
+
+        <section>
+          <p>We migrated our 492 business rules to dOOv,
+            <br/> we now have
+            <strong>compliance</strong>,
+            <strong>auditability</strong>,
+            <strong>governance</strong>,
+            <strong>clarity</strong>
+            <br/>and more!</p>
+        </section>
+
+        <section>
+          <h2>Enjoy dOOv.io</h2>
+          <img class="logo herve-francois" src="img/doov/doov_logo_2020_white.svg" width="33%">
+          <p>
+            <a href="http://www.dOOv.io">http://www.dOOv.io</a>
+          </p>
+          <ul>
+            <li><a href="http://github.com/doov-io/doov">http://github.com/doov-io/doov</a> (framework and examples)</li>
+            <li><a href="https://repo1.maven.org/maven2/io/doov">https://repo1.maven.org/maven2/io/doov</a> (maven central: <strong>2.7.8</strong>)</li>
+            <li><a href="http://github.com/doov-io/doov-docs">http://github.com/doov-io/doov-docs</a> (slides)</li>
+            <li>Apache Licence</li>
+            <li>Try and contribute!</li>
+          </ul>
+        </section>
+
+      </section>
+
+      </section>
+    </div>
+  </div>
+  <script src="bower_components/reveal.js/lib/js/head.min.js"></script>
+  <script src="bower_components/reveal.js/js/reveal.js"></script>
+  <script>
+    // Full list of configuration options available here:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+      controls: false,
+      progress: true,
+      history: true,
+      center: true,
+      embedded: true,
+      mouseWheel: true,
+      viewDistance: 5,
+
+      width: 1280,
+      height: 900,
+      margin: 0,
+
+      transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+      // Optional libraries used to extend on reveal.js
+      dependencies: [
+        { src: 'bower_components/reveal.js/lib/js/classList.js', condition: function () { return !document.body.classList; } },
+        { src: 'bower_components/reveal.js/plugin/markdown/marked.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+        { src: 'bower_components/reveal.js/plugin/markdown/markdown.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+        //{ src: 'bower_components/reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+        { src: 'bower_components/reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function () { return !!document.body.classList; } },
+        { src: 'bower_components/reveal.js/plugin/notes/notes.js', async: true, condition: function () { return !!document.body.classList; } }
+      ]
+    });
+
+    // navigation with mouse click
+
+    window.addEventListener("mousedown", handleClick, false);
+    window.addEventListener("contextmenu", function (e) { e.preventDefault(); }, false);
+
+    function handleClick(e) {
+      e.preventDefault();
+      if (e.button === 0) Reveal.next();
+      if (e.button === 2) Reveal.prev();
+    }
+
+  </script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="js/doov.js"></script>
+  <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=desert&amp;callback=doov"></script>
+</body>
+
+</html>

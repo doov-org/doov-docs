@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Becoming Cloud Native</title>
+  <meta name="description" content="If you are managing your business since the good old days, back when public clouds were not mainstream, you frequently face the question of how to transform your existing system to run in a public cloud and leverage a plethora of cloud services. Unfortunately, becoming 'cloud native' is not a migration path, it is more like melting pot of company processes, organization hierarchy, software development methodology coupled with state of the art technologies. In this talk we will describe the self assessment of LesFurets against the Cloud Native Maturity Matrix (Cloud Native Transformation, Michelle Gienow) and explain previous evolution that brought us to the current position. We will then look the way we implement the continuous daily delivery and discuss next iterations to enable transitioning to a cloud native business.">
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="bower_components/reveal.js/css/reveal.css">
+  <link rel="stylesheet" href="bower_components/reveal.js/lib/css/zenburn.css">
+  <link rel="stylesheet" href="css/ocode-theme.css" id="theme">
+  <style>
+    body {
+      background-color: #034a5e;
+      background-image: linear-gradient(to bottom right,#0d718d, #515d7f, #b23743, rgba(237, 31, 120, 0.58));
+      background-image: -webkit-linear-gradient(to bottom right,#0d718d, #515d7f, #b23743, rgba(237, 31, 120, 0.58));
+    }
+  </style>
+  <script>
+    if (window.location.search.match(/print-pdf/gi)) {
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = 'css/print/pdf.css';
+      document.getElementsByTagName('head')[0].appendChild(link);
+    }
+  </script>
+</head>
+
+<body>
+  <div class="footer">
+    <img class="logo-conference" src="img/third-party/cfa_insta.jpg">
+  </div>
+  <div class="reveal">
+    <div class="slides">
+
+      <section>
+        <img class="logo herve-francois" width="45%" src="img/third-party/lf_com_herve_francois.png">
+        <h1 class="code">Becoming Cloud Native</h1>
+      </section>
+
+      <section>
+        <section>
+          <h2>Welcome to the Furets!</h2>
+        </section>
+        <section>
+          <div class="">
+            <h2>@gdigugli – Gilles Di Guglielmo</h2>
+            <ul>
+              <li>Designer of sweet cooked software since 1999</li>
+              <li>Software Architect at LesFurets.com</li>
+            </ul>
+          </div>
+        </section>
+        <section>
+          <h2>Insurance comparison (and more !)</h2>
+          <img width="70%" src="img/lf_com_home.png">
+        </section>
+        <section>
+          <img width="70%" src="img/lf_com_mrh_journey.png">
+        </section>
+        <section>
+          <img width="70%" src="img/lf_com_car_price_sheet.png">
+        </section>
+        <section>
+          <img width="30%" src="img/third-party/Les Furets_Logo_Darkbackgound_RGB.svg" class="logo herve-francois">
+          <ul class="fragment">
+            <li>1 website :
+              <li>5 Insurance Products : Car, Health, Home, Bike, Loan</li>
+              <li>Banks, energy, loans, Internet Box</li>
+              <li class="emptyline">1 codebase, 450k lines of code, 60k unit tests, 150 selenium tests</li>
+
+              <li>23 Developers, 1 DevOps, 3 Architects</li>
+              <li class="emptyline">20+ production servers including Load balancers, Frontend, Backend, Databases, BI
+                <br/>
+              </li>
+
+              <li>1 release per day</li>
+              <li class="emptyline">8 years of code history
+                <br/>
+              </li>
+
+              <li>3M quotes/year, 40% of market share, 4M of customers</li>
+          </ul>
+        </section>
+      </section>
+
+      <section>
+        <section>
+          <h3>What is Cloud Native ?</h3>
+        </section>
+        <section>
+          <h3>Reader's digest</h3>
+          <img width="30%" src="img/cloud_native/cloud_native_transformation.jpg">
+          <ul>Cloud Native Transformation: Practical Patterns for Innovation</ul>
+          <ul>by Pini Reznik, Jamie Dobson, Michelle Gienow</ul>
+        </section>
+        <section>
+          <h3>Maturity Matrix</h3>
+          <img width="60%" src="img/cloud_native/cloud_native_maturity_matrix.png">
+        </section>
+        <section data-background="img/cloud_native/cloud_native_maturity_matrix_lesfurets_2009.svg" data-background-size="contain" data-background-color="#f3f3f3"></section>
+        <section data-background="img/cloud_native/cloud_native_maturity_matrix_lesfurets_2013.svg" data-background-size="contain" data-background-color="#f3f3f3"></section>
+        <section data-background="img/cloud_native/cloud_native_maturity_matrix_lesfurets_2015.svg" data-background-size="contain" data-background-color="#f3f3f3"></section>
+        <section data-background="img/cloud_native/cloud_native_maturity_matrix_lesfurets_2020.svg" data-background-size="contain" data-background-color="#f3f3f3"></section>
+        <section data-background="img/cloud_native/cloud_native_maturity_matrix_lesfurets_2009_2020.svg" data-background-size="contain" data-background-color="#f3f3f3"></section>
+        <section>
+          <h3>Cloud Native Landscape</h3>
+          <img width="96%" src="img/cloud_native/cloud_native_landscape.png">
+        </section>
+        <section>
+          <h3>Reader's thoughts</h3>
+          <ul>
+            <li>Software design became more driven by the infrastructure</li>
+            <li>Software governance is not part of the methodology</li>
+            <li>Data flow transformation and data governance is not covered</li>
+            <li>Technical cloud stack could be obsolete very quickly</li>
+            <li>Most tools are not ready for production</li>
+            <li>Vendor lock-in is nearly impossible to avoid</li>
+            <li>Big challenge to implement the stack relying on OSS</li>
+          </ul>
+        </section>
+      </section>
+
+      <section>
+        <section>
+          <h3>Cloud Native LesFurets: Where to start ?</h3>
+          <ul>
+            <li>Data/BI</li>
+            <li>Runtime software architecture</li>
+            <li>Infrastructure Management</li>
+            <li>Software Factory - CI/CD</li>
+          </ul>
+        </section>
+        <section>
+          <h2>Overview of current architecture</h2>
+          <img width="100%" src="img/cloud_native/lesfurets_archi_update.svg">
+        </section>
+        <section data-background="img/cloud_native/cloud_migration_target_architecture_1.svg" data-background-size="contain" data-background-color="#f3f3f3"></section>
+        <section data-background="img/cloud_native/cloud_migration_target_architecture_2.svg" data-background-size="contain" data-background-color="#f3f3f3"></section>
+        <section data-background="img/cloud_native/cloud_migration_target_architecture_3.svg" data-background-size="contain" data-background-color="#f3f3f3"></section>
+        <section data-background="img/cloud_native/cloud_migration_target_architecture_4.svg" data-background-size="contain" data-background-color="#f3f3f3"></section>
+        <section data-background="img/cloud_native/cloud_migration_ci_cd_1.png" data-background-size="contain" data-background-color="#f3f3f3"></section>
+        <section data-background="img/cloud_native/cloud_migration_ci_cd_2.png" data-background-size="contain" data-background-color="#f3f3f3"></section>
+        <section data-background="img/cloud_native/cloud_migration_ci_cd_3.png" data-background-size="contain" data-background-color="#f3f3f3"></section>
+      </section>
+        <section>
+          <h2>Thank You!</h2>
+        </section>
+      </section>
+
+      </section>
+
+    </div>
+  </div>
+  <script src="bower_components/reveal.js/lib/js/head.min.js"></script>
+  <script src="bower_components/reveal.js/js/reveal.js"></script>
+  <script>
+    // Full list of configuration options available here:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+      controls: false,
+      progress: true,
+      history: true,
+      center: true,
+      embedded: true,
+      mouseWheel: true,
+      viewDistance: 5,
+
+      width: 1280,
+      height: 900,
+      margin: 0,
+
+      transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+      // Optional libraries used to extend on reveal.js
+      dependencies: [
+        { src: 'bower_components/reveal.js/lib/js/classList.js', condition: function () { return !document.body.classList; } },
+        { src: 'bower_components/reveal.js/plugin/markdown/marked.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+        { src: 'bower_components/reveal.js/plugin/markdown/markdown.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+        //{ src: 'bower_components/reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+        { src: 'bower_components/reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function () { return !!document.body.classList; } },
+        { src: 'bower_components/reveal.js/plugin/notes/notes.js', async: true, condition: function () { return !!document.body.classList; } }
+      ]
+    });
+
+    // navigation with mouse click
+
+    window.addEventListener("mousedown", handleClick, false);
+    window.addEventListener("contextmenu", function (e) { e.preventDefault(); }, false);
+
+    function handleClick(e) {
+      e.preventDefault();
+      if (e.button === 0) Reveal.next();
+      if (e.button === 2) Reveal.prev();
+    }
+
+  </script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="js/doov.js"></script>
+  <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=desert&amp;callback=doov"></script>
+</body>
+
+</html>

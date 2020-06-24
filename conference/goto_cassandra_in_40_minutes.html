@@ -24,15 +24,15 @@
 
 <body>
   <div class="footer">
-    <img class="logo-lesfurets" src="img/logo_lesfurets_blanc.png">
-    <img class="logo-lesfurets" src="img/doov_io_logo_dark_small.png">
-    <img class="logo-conference" src="img/logo_paris_cassandra_user_group.png">
+    <img class="logo-lesfurets" src="img/third-party/Les Furets_Logo_Darkbackgound_RGB.svg">
+    <img class="logo-doov" src="img/doov/doov_logo_2020_white.svg">
+    <img class="logo-conference" src="img/third-party/logo_paris_cassandra_user_group.png">
   </div>
   <div class="reveal">
     <div class="slides">
 
       <section>
-        <img class="logo herve-francois" width="45%" src="img/lf_com_herve_francois.png">
+        <img class="logo herve-francois" width="45%" src="img/third-party/lf_com_herve_francois.png">
         <h1 class="code">Goto Cassandra in 40 minutes
           <br> &nbsp;&nbsp;&nbsp;[at] LesFurets.com</h1>
       </section>
@@ -70,7 +70,7 @@
           <img width="70%" src="img/lf_com_car_price_sheet.png">
         </section>
         <section>
-          <img width="50%" src="img/logo_lesfurets.png">
+          <img width="50%" src="img/third-party/logo_lesfurets_new.png">
           <p></p>
           <ul class="fragment">
             <li>1 website :
@@ -267,14 +267,17 @@ newModel.stream().forEach(System.out::println);
             <pre class="prettyprint">
                 <code class="code lang-java">
 FieldModel model = SampleModels.wrapper();
-Create create = <mark>SchemaBuilder.createTable("meetup", "sample_model")</mark>
-        .addClusteringColumn(LOGIN.name(), text())
-        .addPartitionKey("snapshot_id", timeuuid());
+
+CreateTable createTable = SchemaBuilder.createTable("sample", "model")
+      .withPartitionKey("snapshot_id", DataTypes.TIMEUUID)
+      .withClusteringColumn(LOGIN.name(), DataTypes.TEXT);
           
-model.getFieldInfos().stream().filter(f -> f.id() != LOGIN)
-        .forEach(f -> create.addColumn(f.id().code(), cqlType(f)));
+for (FieldInfo info : model.getFieldInfos()) {
+      createTable = createTable.withColumn(info.id().code(), cqlType(info));
+}
           
-Create.Options create = create.withOptions().clusteringOrder(LOGIN.name(), DESC);
+CreateTableWithOptions createTableWithOptions = createTable
+      .withClusteringOrder(LOGIN.name(), ClusteringOrder.DESC);
                 </code>
               </pre>
           </div>
@@ -284,15 +287,16 @@ Create.Options create = create.withOptions().clusteringOrder(LOGIN.name(), DESC)
           <div class="code-wrapper">
             <pre class="prettyprint">
                 <code class="code lang-java">
-CodecRegistry codec = new CodecRegistry();
-codec.register(LocalDateCodec.instance);
-codec.register(new EnumNameCodec<>(Country.class));
+CqlSession session = CqlSession.builder().build();
+
+MutableCodecRegistry registry = session.getContext().getCodecRegistry();
+registry.register(new EnumNameCodec<>(Country.class));
+registry.register(new EnumNameCodec<>(EmailType.class));
 ...
 
-Cluster cluster = new Cluster.Builder().addContactPoint("localhost")
-          .withCodecRegistry(codec).build();
-Session session = cluster.connect();
-<mark>session.execute(createWithOptions);</mark>
+try (CqlSession session = session()) {
+  <mark>session.execute(createTableWithOptions);</mark>
+}
                 </code>
               </pre>
           </div>
@@ -302,9 +306,9 @@ Session session = cluster.connect();
           <div class="code-wrapper">
             <pre class="prettyprint">
               <code class="code lang-xml output">
-cqlsh:meetup> <mark>DESCRIBE meetup</mark>
+cqlsh:sample> <mark>DESCRIBE model</mark>
 
-CREATE TABLE meetup.sample_model (
+CREATE TABLE sample.model (
     snapshot_id timeuuid,
     login text,
     birthdate date,
@@ -326,12 +330,14 @@ CREATE TABLE meetup.sample_model (
             <pre class="prettyprint">
               <code class="code lang-java">
 FieldModel model = SampleModels.wrapper();
-          
-Insert insert = <mark>QueryBuilder.insertInto("meetup", "sample_model");</mark>
-model.stream().forEach(e -> insert.value(e.getKey().code(), e.getValue()));
-insert.value("snapshot_id", UUIDs.timeBased());
 
-session.execute(insert);
+Map<String, Term> values = model.stream().collect(Collectors.toMap(
+      e -> e.getKey().code(),
+      e -> QueryBuilder.literal(e.getValue(), codecRegistry)));
+
+Insert insertRequest = QueryBuilder.insertInto("sample", "model")
+      .value("snapshot_id", QueryBuilder.literal(Uuids.timeBased()))
+      .values(values);
               </code>
             </pre>
           </div>
@@ -341,7 +347,7 @@ session.execute(insert);
           <div class="code-wrapper">
             <pre class="prettyprint">
               <code class="code lang-xml output">
-cqlsh:meetup> <mark>SELECT * FROM sample_model;</mark>
+cqlsh:sample> <mark>SELECT * FROM model;</mark>
 
 snapshot_id                          | login  | account_id | address       | birthdate  |
 -------------------------------------+--------+------------+---------------+------------|
@@ -388,13 +394,16 @@ BUILD SUCCESSFUL in 23s
             <pre class="prettyprint">
                 <code class="code lang_java">
 FieldModel model = SampleModels.wrapper();
-model.getFieldInfos().stream().filter(f -> {
-    ColumnMetadata column = session.getCluster().getMetadata()
-            .getKeyspace("meetup").getTable("sample_model")
-            .getColumn(f.id().code());
-    return column == null;
-}).forEach(f -> session.execute(SchemaBuilder.alterTable("meetup", "sample_model")
-        .addColumn(f.id().code()).type(cqlType(f))));
+
+try (CqlSession session = CqlSession.builder().build()) {
+    model.getFieldInfos().stream()
+        .filter(f -> session.getMetadata()
+              .getKeyspace("sample").get()
+              .getTable("model").get()
+              .getColumn(f.id().code()).isPresent())
+        .forEach(f -> session.execute(SchemaBuilder.alterTable("sample", "model")
+              .addColumn(f.id().code(), cqlType(f)).build()));
+}
                 </code>
               </pre>
           </div>
@@ -405,13 +414,13 @@ model.getFieldInfos().stream().filter(f -> {
       <section>
         <section>
           <h2>Enjoy dOOv.io</h2>
-          <img class="logo herve-francois" src="img/doov_io_logo_dark_large.png" width="33%">
+          <img class="logo herve-francois" src="img/doov/doov_logo_2020_white.svg" width="33%">
           <p>
             <a href="http://www.dOOv.io">http://www.dOOv.io</a>
           </p>
           <ul>
             <li><a href="http://github.com/doov-io/doov">http://github.com/doov-io/doov</a> (framework and examples)</li>
-            <li><a href="https://repo1.maven.org/maven2/io/doov">https://repo1.maven.org/maven2/io/doov</a> (maven central: <strong>2.0.0</strong>)</li>
+            <li><a href="https://repo1.maven.org/maven2/io/doov">https://repo1.maven.org/maven2/io/doov</a> (maven central: <strong>2.7.8</strong>)</li>
             <li><a href="http://github.com/doov-io/doov-docs">http://github.com/doov-io/doov-docs</a> (slides)</li>
             <li>Apache Licence</li>
             <li>Try and contribute!</li>
@@ -420,7 +429,7 @@ model.getFieldInfos().stream().filter(f -> {
 
         <section>
           <h2>Thank You!</h2>
-          <img class="logo herve-francois" width="50%" src="img/logo_paris_cassandra_user_group.png">
+          <img class="logo herve-francois" width="50%" src="img/third-party/logo_paris_cassandra_user_group.png">
         </section>
       </section>
 
