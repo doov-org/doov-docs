@@ -99,9 +99,9 @@ TO_SUBMIT
 
 ## Private message for committee
 
-Website: http://doov.io
+Website: http://doov.org
 Github: https://github.com/lesfurets/dOOv
-Slides: http://doov.io/dsl_to_go_beyond_bean_validation_english.html
+Slides: http://doov.org/dsl_to_go_beyond_bean_validation_english.html
 
 
 

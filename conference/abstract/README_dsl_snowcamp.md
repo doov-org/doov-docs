@@ -4,7 +4,7 @@ Fluent, stream-like API's are great for writing type checked code, taking
 advantage of Java 8 functions and lambdas. Perhaps the best example of such
 project is jOOQ, which creates a fluent Java DSL for SQL. But what about
 creating your own DSL to manipulate and validate your model? We created an
-open-source framework called dOOv (http://doov.io) for generating a validation
+open-source framework called dOOv (http://doov.org) for generating a validation
 DSL from a domain model. This presentation will demonstrate the efficiency and
 expressiveness of this framework to define validation constraints and to
 generate a human readable and comprehensive rules catalog. We will also

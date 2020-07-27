@@ -17,9 +17,9 @@ legacy business rule migration to dOOv.
 
 ## Private message for committee
 
-Website: http://doov.io
+Website: http://doov.org
 Github: https://github.com/lesfurets/dOOv
-Slides: http://doov.io/dsl_to_go_beyond_bean_validation_english.html
+Slides: http://doov.org/dsl_to_go_beyond_bean_validation_english.html
 
 We developed dOOv to migrate our 500 business validation rules to a format that
 would be easy to write and to export in a human readable form. We open-sourced

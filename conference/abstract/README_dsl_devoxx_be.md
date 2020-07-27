@@ -6,7 +6,7 @@ Fluent, stream-like API are great for writing type checked code, leveraging
 Java 8 functions and lambdas. But what about creating your own
 fluent API to manipulate and validate your model? We created an open-source
 framework called dOOv, for "Domain Object Oriented Validation"
-(http://doov.io), that generates a validation DSL from a domain model. This
+(http://doov.org), that generates a validation DSL from a domain model. This
 presentation will demonstrate the efficiency and expressiveness of dOOv to
 define validation constraints. The validation rules are represented as an
 abstract syntax tree, which makes it possible to visit the tree and show the
@@ -16,9 +16,9 @@ legacy business rule migration to dOOv.
 
 ## Private message for committee
 
-Website: http://doov.io
+Website: http://doov.org
 Github: https://github.com/lesfurets/dOOv
-Slides: http://doov.io/dsl_to_go_beyond_bean_validation_ocode.html
+Slides: http://doov.org/dsl_to_go_beyond_bean_validation_ocode.html
 
 We developed dOOv to migrate our 500 business validation rules to a format that
 would be easy to write and to export in a human readable form. We open-sourced
@@ -48,9 +48,9 @@ evaluate the performance and flexibility gains.
 
 ## Private message for committee
 
-Website: http://doov.io
+Website: http://doov.org
 Github: https://github.com/lesfurets/dOOv
-Slides: http://doov.io/dsl_to_go_beyond_bean_validation_ocode.html
+Slides: http://doov.org/dsl_to_go_beyond_bean_validation_ocode.html
 
 We developed dOOv to migrate our 500 business validation rules to a format that
 would be easy to write and to export in a human readable form. We open-sourced

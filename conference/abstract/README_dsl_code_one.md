@@ -5,7 +5,7 @@ server code, each with its challenges to govern business logic.
 What about easily creating your own fluent API in Java in order to manipulate and
 drive the business logic of the whole application, supporting a polyglot approach? 
 
-With the dOOv framework (https://doov.io) we provide a fluent API for object validation
+With the dOOv framework (https://doov.org) we provide a fluent API for object validation
 and mapping that could be used symmetrically in Java and in TypeScript. 
 We will tell you the story of how we migrated iteratively our web application
 containing web forms of hundreds of inputs, with complex validation and dependency logic,
@@ -13,9 +13,9 @@ reused effortlessly between client and server side.
 
 ## Private message for committee
 
-Website: http://doov.io
+Website: http://doov.org
 Github: https://github.com/doov-io
-Slides: https://doov.io/conference/how_to_create_dsl_with_lambda_builders.html
+Slides: https://doov.org/conference/how_to_create_dsl_with_lambda_builders.html
 
 
 We developed dOOv to migrate 1000+ business rules to a format that would be easy to write
