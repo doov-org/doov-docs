@@ -14,7 +14,7 @@ reused effortlessly between client and server side.
 ## Private message for committee
 
 Website: http://doov.org
-Github: https://github.com/doov-io
+Github: https://github.com/doov-org
 Slides: https://doov.org/conference/how_to_create_dsl_with_lambda_builders.html
 
 

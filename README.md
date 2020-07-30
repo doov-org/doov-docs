@@ -1,15 +1,15 @@
 # dOOv (Domain Object Oriented Validation) documentation
 
-[dOOv](https://github.com/doov-io/doov) Code source.
+[dOOv](https://github.com/doov-org/doov) Code source.
 
 ![dOOv logo](conference/img/doov/doov_logo_2020_blue.svg)
 
 ## Links
 
 - **Website:** [https://doov.org](https://doov.org)
-- **Org:** [https://github.com/doov-io](https://github.com/doov-io)
-- **Code:** [https://github.com/doov-io/doov](https://github.com/doov-io/doov)
-- **Wiki:** [https://github.com/doov-io/doov/wiki](https://github.com/doov-io/doov/wiki)
+- **Org:** [https://github.com/doov-org](https://github.com/doov-org)
+- **Code:** [https://github.com/doov-org/doov](https://github.com/doov-org/doov)
+- **Wiki:** [https://github.com/doov-org/doov/wiki](https://github.com/doov-org/doov/wiki)
 
 ## Conferences
 
