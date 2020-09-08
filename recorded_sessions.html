@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>dOOv, Recorded Conference Sessions</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <style>
+    .lead {
+      margin-top: 20px;
+      margin-bottom: 0px;
+      color: #000765;
+    }
+
+    .navbar-logo img {
+      width: 147px;
+    }
+
+    .navbar-logo {
+      padding: 15px 15px 0;
+      margin-bottom: 20px;
+    }
+
+    img {
+      height: auto !important;
+      max-width: 100%;
+    }
+
+    .front-graphic {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    ul.navbar-nav {
+      width: 100%;
+    }
+
+    .navbar-bottom {
+      margin-bottom: 30px;
+    }
+
+    .navbar-default .navbar-nav>li {
+      float: none;
+    }
+
+    .navbar-default .navbar-nav>li>a {
+      color: #212121;
+    }
+
+    .navbar-default .navbar-nav>li>a:hover {
+      background: #E7E7E7;
+    }
+
+    .navbar-main>li>a {
+      font-weight: bold;
+    }
+
+    .navbar-nav>li>a {
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+
+    .navbar-collapse {
+      padding: 0;
+    }
+
+    .navbar-main>li>a {
+      font-weight: bold;
+    }
+
+    @media screen and (min-width: 768px) {
+      #sidebar .navbar {
+        max-width: 157px;
+      }
+    }
+
+    @media screen and (min-width: 992px) {
+      #sidebar .navbar {
+        max-width: 212px;
+      }
+    }
+
+    @media screen and (min-width: 1200px) {
+      #sidebar .navbar {
+        max-width: 260px;
+      }
+    }
+
+    .navbar {
+      border-radius: 0;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      padding-top: 70px;
+      margin-top: -60px;
+    }
+
+    h2 {
+      font-size: 140%;
+    }
+
+    .jcarousel {
+      position: relative;
+      overflow: hidden;
+      margin: 30px 0;
+    }
+
+    .jcarousel li {
+      float: left;
+      text-align: center;
+    }
+
+    .jcarousel ul {
+      width: 20000em;
+      position: relative;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .jcarousel-legend {
+      font-size: 10px;
+      margin-left: 10px;
+    }
+
+    .jcarousel-control-prev {
+      position: absolute;
+      top: 50%;
+      left: 0;
+    }
+
+    .jcarousel-control-next {
+      position: absolute;
+      top: 50%;
+      right: 0;
+    }
+
+    .doov-navbar-title {
+      color: #000765;
+      font-size: 15px;
+      font-weight: bold;
+      margin-left: 15px;
+      margin-bottom: 6px;
+    }
+
+    @media (min-width: 460px) {
+      .yt-frame {
+        width: 374px;
+        height: 212px;
+      }
+    }
+
+    @media (min-width: 512px) {
+      .yt-frame {
+        width: 450px;
+        height: 255px;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .yt-frame {
+        width: 218px;
+        height: 123px;
+      }
+    }
+
+    @media (min-width: 992px) {
+      .yt-frame {
+        width: 300px;
+        height: 170px;
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .yt-frame {
+        width: 374px;
+        height: 212px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="row">
+
+
+      <div id="sidebar" class="col-sm-3">
+
+        <nav class="navbar navbar-default" style="position: static;">
+          <!-- The logo. -->
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target="#bs-example-navbar-collapse-1">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <div class="navbar-logo">
+              <a href="#">
+                <img alt="dOOv" src="conference/img/doov/doov_logo_2020_blue.svg">
+              </a>
+            </div>
+          </div>
+
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-main">
+              <li><a href="index.html">What is dOOv?</a></li>
+
+              <hr>
+
+              <h4 class="doov-navbar-title">Java DSL - Mapping</h4>
+
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                  Documentation <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a href="https://github.com/doov-org/doov/wiki/Getting-Started" target="_blank">
+                      <span class="glyphicon glyphicon-book"></span> Getting Started</a>
+                  </li>
+                  <li><a href="https://github.com/doov-org/doov/wiki/DSL-Code-Generation" target="_blank">
+                      <span class="glyphicon glyphicon-book"></span> Code Generation</a>
+                  </li>
+                  <li><a href="https://github.com/doov-org/doov/wiki/dOOv-without-code-generation" target="_blank">
+                      <span class="glyphicon glyphicon-book"></span> Without Code Generation</a>
+                  </li>
+                  <li><a href="https://github.com/doov-org/doov/wiki/Validation-Rules" target="_blank">
+                      <span class="glyphicon glyphicon-book"></span> Example</a>
+                  </li>
+                  <li><a href="https://github.com/doov-org/doov/wiki/Validation-Engine" target="_blank">
+                      <span class="glyphicon glyphicon-book"></span> Writting DSL </a>
+                  </li>
+                  <li><a href="https://github.com/doov-org/doov/wiki/Testing-Rules" target="_blank">
+                      <span class="glyphicon glyphicon-book"></span> Testing</a>
+                  </li>
+                  <li><a href="https://github.com/doov-org/doov/wiki/Predicate-Reduction" target="_blank">
+                      <span class="glyphicon glyphicon-book"></span> Predicate reduction</a>
+                  </li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                  Downloads <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a href="https://mvnrepository.com/artifact/io.doov" target="_blank">
+                      <code>doov</code> on Maven Central (latest stable release) <span
+                        class="glyphicon glyphicon-download-alt"></span>
+                    </a></li>
+                  <li><a href="https://mvnrepository.com/artifact/io.doov/doov-core" target="_blank">
+                      <code>doov-core</code> on Maven Central (latest stable release) <span
+                        class="glyphicon glyphicon-download-alt"></span>
+                    </a></li>
+                  <li><a href="https://mvnrepository.com/artifact/io.doov/doov-assertions" target="_blank">
+                      <code>doov-assertions</code> on Maven Central (latest stable release) <span
+                        class="glyphicon glyphicon-download-alt"></span>
+                    </a></li>
+                  <li><a href="https://mvnrepository.com/artifact/io.doov/doov-generator" target="_blank">
+                      <code>doov-generator</code> on Maven Central (latest stable release) <span
+                        class="glyphicon glyphicon-download-alt"></span>
+                    </a></li>
+                </ul>
+              </li>
+              <li><a href="https://github.com/doov-org/doov" target="_blank">
+                  GitHub Repository <span class="glyphicon glyphicon-new-window"></span>
+                </a></li>
+
+              <hr>
+
+              <h4 class="doov-navbar-title">Typescript - React JS</h4>
+
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                  Documentation <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a href="https://github.com/doov-org/doov-ts/wiki" target="_blank">
+                      <span class="glyphicon glyphicon-book"></span> Getting Started</a>
+                  </li>
+                  <li><a href="https://github.com/doov-org/doov-ts/wiki" target="_blank">
+                      <span class="glyphicon glyphicon-book"></span> Preparing the model</a>
+                  </li>
+                  <li><a href="https://github.com/doov-org/doov-ts/wiki" target="_blank">
+                      <span class="glyphicon glyphicon-book"></span> Example</a>
+                  </li>
+                  <li><a href="https://github.com/doov-org/doov-ts/wiki" target="_blank">
+                      <span class="glyphicon glyphicon-book"></span> Writting DSL</a></li>
+                  <li><a href="https://github.com/doov-org/doov-ts/wiki" target="_blank">
+                      <span class="glyphicon glyphicon-book"></span> i18n</a>
+                  </li>
+                  <li><a href="https://github.com/doov-org/doov-ts-react/wiki" target="_blank">
+                      <span class="glyphicon glyphicon-book"></span> React JS rendering</a>
+                  </li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                  Downloads <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a href="https://www.npmjs.com/package/doov" target="_blank">
+                      <code>doov</code> on NPM (latest stable release) <span
+                        class="glyphicon glyphicon-download-alt"></span>
+                    </a></li>
+                  <li><a href="https://www.npmjs.com/package/doov-react" target="_blank">
+                      <code>doov-react</code> on NPM (latest stable release) <span
+                        class="glyphicon glyphicon-download-alt"></span>
+                    </a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                  GitHub Repository <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a href="https://github.com/doov-org/doov-ts" target="_blank">
+                      dOOv Typescript <span class="glyphicon glyphicon-new-window"></span>
+                    </a></li>
+                  <li><a href="https://github.com/doov-org/doov-ts-react" target="_blank">
+                      dOOv React JS <span class="glyphicon glyphicon-new-window"></span>
+                    </a></li>
+                </ul>
+              </li>
+
+              <hr>
+
+              <li><a href="https://github.com/doov-org/doov/wiki/Conferences-and-Events" target="_blank">
+                  Conferences and Events <span class="glyphicon glyphicon-education"></span>
+                </a></li>
+              <li><a href="recorded_sessions.html" target="_blank">
+                  Recorded Sessions <span class="glyphicon glyphicon-education"></span>
+                </a></li>
+            </ul>
+
+            <ul class="nav navbar-nav navbar-bottom">
+              <hr>
+              <li>
+                <style>
+                  .smalllinks:link {
+                    display: inline-block !important;
+                    background: none;
+                    padding-top: 0px;
+                    padding-bottom: 0px;
+                    padding-right: 0px;
+                    min-width: 75px;
+                  }
+                </style>
+                <a class="smalllinks" href="https://www.apache.org/licenses/" target="_blank">
+                  Apache License <span class="glyphicon glyphicon-new-window"></span>
+                </a>
+              </li>
+
+            </ul>
+          </div>
+        </nav>
+
+      </div>
+      <div class="col-sm-9">
+        <div class="row-fluid">
+
+          <div class="col-sm-12">
+            <p class="lead">
+              <strong>dOOv, recorded conference sessions</strong>
+            </p>
+          </div>
+
+          <div class="col-sm-12">
+            <hr>
+          </div>
+
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <img alt="dOOv" src="conference/img/doov/doov_logo_2020_blue.svg" width="11%"
+                  style="vertical-align: baseline;">
+                &nbsp;&nbsp;<b><a href="conference/how_to_share_business_logic_polyglot_java_ts_ocode19.html" target="_blank">How to Share the Business Logic in a Polyglot App Mixing Java and TypeScript</a></b>
+              </div>
+              <div class="panel-body">
+                <iframe src="https://www.youtube.com/embed/HmKaUdP6SKo" class="yt-frame" frameborder="0"
+                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen></iframe>
+                <br />
+                Sorbonne University (Paris) - October 11, 2019
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <img alt="dOOv" src="conference/img/doov/doov_logo_2020_blue.svg" width="11%"
+                  style="vertical-align: baseline;">
+                &nbsp;&nbsp;<b><a href="conference/goto_cassandra_in_60_minutes.html" target="_blank">Go to cassandra in 60 minutes</a></b>
+              </div>
+              <div class="panel-body">
+                <iframe src="https://www.youtube.com/embed/dBC3ldNU-3g" class="yt-frame" frameborder="0"
+                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen></iframe>
+                <br />
+                Sorbonne University (Paris) - October 11, 2019
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <img alt="dOOv" src="conference/img/doov/doov_logo_2020_blue.svg" width="11%"
+                  style="vertical-align: baseline;">
+                &nbsp;&nbsp;<b><a href="conference/how_to_create_dsl_with_lambda_builders_roma.html" target="_blank">How to create a Fluent API DSL with a lambda builder</a></b>
+              </div>
+              <div class="panel-body">
+                <iframe src="https://www.youtube.com/embed/GDcBoEBO73Y" class="yt-frame" frameborder="0"
+                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen></iframe>
+                <br />
+                Oracle Code (Roma) - April 4, 2019
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <img alt="dOOv" src="conference/img/doov/doov_logo_2020_blue.svg" width="11%"
+                  style="vertical-align: baseline;">
+                &nbsp;&nbsp;<b><a href="#">DSL.using(java) .toGoBeyond(BeanValidation)</a></b>
+              </div>
+              <div class="panel-body">
+                <iframe src="https://www.youtube.com/embed/Jm_OWSQ3uuQ" class="yt-frame" frameborder="0"
+                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen></iframe>
+                <br />
+                Oracle Code (Paris) - July 3, 2018
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <img alt="dOOv" src="conference/img/doov/doov_logo_2020_blue.svg" width="11%"
+                  style="vertical-align: baseline;">
+                &nbsp;&nbsp;<b><a href="conference/dsl_to_go_beyond_bean_validation_openrday.html" target="_blank">DSL.using(java) .toGoBeyond(BeanValidation)</a></b>
+              </div>
+              <div class="panel-body">
+                <iframe src="https://www.youtube.com/embed/a0PJ3NuSA_c" class="yt-frame" frameborder="0"
+                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen></iframe>
+                <br />
+                OpenRnDay (Paris) - June 20, 2018
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <img alt="dOOv" src="conference/img/doov/doov_logo_2020_blue.svg" width="11%"
+                  style="vertical-align: baseline;">
+                &nbsp;&nbsp;<b><a href="conference/dsl_to_go_beyond_bean_validation_jdk_io.html" target="_blank">DSL.using(java) .toGoBeyond(BeanValidation)</a></b>
+              </div>
+              <div class="panel-body">
+                <iframe src="https://www.youtube.com/embed/2R1ByMSVHa8" class="yt-frame" frameborder="0"
+                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen></iframe>
+                <br />
+                JDK.io (Copenhagen) - June 11, 2018
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <img alt="dOOv" src="conference/img/doov/doov_logo_2020_blue.svg" width="11%"
+                  style="vertical-align: baseline;">
+                &nbsp;&nbsp;<b><a href="#">DomainModel().stream()</a></b>
+              </div>
+              <div class="panel-body">
+                <iframe src="https://www.youtube.com/embed/D_52Jpinj_g" class="yt-frame" frameborder="0"
+                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen></iframe>
+                <br />
+                OpenRnDay (Paris) - June 14, 2017
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <img alt="dOOv" src="conference/img/doov/doov_logo_2020_blue.svg" width="11%"
+                  style="vertical-align: baseline;">
+                &nbsp;&nbsp;<b><a href="conference/domain_model_dot_stream_breizhjug.html" target="_blank">DomainModel.stream()</a></b>
+              </div>
+              <div class="panel-body">
+                <iframe src="https://www.youtube.com/embed/MS5HUrs3PrQ" class="yt-frame" frameborder="0"
+                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen></iframe>
+                <br />
+                BreizhJUG (Rennes) - January 16, 2017
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <img alt="dOOv" src="conference/img/doov/doov_logo_2020_blue.svg" width="11%"
+                  style="vertical-align: baseline;">
+                &nbsp;&nbsp;<b><a href="conference/domain_model_dot_stream_parisjug_live_code.html" target="_blank">DomainModel().stream()</a></b>
+              </div>
+              <div class="panel-body">
+                <iframe src="https://www.youtube.com/embed/tVXbZTb00Ok" class="yt-frame" frameborder="0"
+                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen></iframe>
+                <br />
+                Paris JUG - June 16, 2016
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <img alt="dOOv" src="conference/img/doov/doov_logo_2020_blue.svg" width="11%"
+                  style="vertical-align: baseline;">
+                &nbsp;&nbsp;<b><a href="#">DomainModel().stream()</a></b>
+              </div>
+              <div class="panel-body">
+                <iframe src="https://www.youtube.com/embed/mRu30jO2c18" class="yt-frame" frameborder="0"
+                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen></iframe>
+                <br />
+                Geneva JUG - June 3, 2016
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <hr>
+
+  </div>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>

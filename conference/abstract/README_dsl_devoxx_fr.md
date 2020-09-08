@@ -100,7 +100,7 @@ TO_SUBMIT
 ## Private message for committee
 
 Website: http://doov.org
-Github: https://github.com/lesfurets/dOOv
+Github: https://github.com/doov-org
 Slides: http://doov.org/dsl_to_go_beyond_bean_validation_english.html
 
 
